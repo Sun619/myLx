@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+* {
+	margin:0;
+	padding:0;
+}
+ul {
+	list-style:none;
+}
+#name_message {
+	color:red;
+	display:none;
+}
+p {
+	display:none;
+}
+.ati {
+	background:url(img/tixing.jpg);
+	display:inline-block;
+	width:20px;
+	height:19px;
+}
+.err {
+	background:url(img/cuowu.jpg);
+	display:inline-block;
+	width:20px;
+	height:19px;
+}
+.ok {
+	background:url(img/ok.jpg);
+	display:inline-block;
+	width:20px;
+	height:19px;
+}
+#count {
+	visibility:hidden;
+}
+em {
+	background:yellow;
+	width:100px;
+	text-align:center;
+	display:inline-block;
+}
+.active {
+	background:red;
+	width:100px;
+	text-align:center;
+	display:inline-block;
+}
+</style>
+<script type="text/javascript">
+function findChar(str,n){
+	var stm=0;
+	for(var i=0;i<str.length;i++){
+		if(str.charAt(i)==n){
+			stm++
+			}
+					}
+		return stm;
+	}
+window.onload=function(){
+	var aInput=document.getElementsByTagName("input");
+	var oName=aInput[0];
+	var pwd=aInput[1];
+	var pwd2=aInput[2];
+	var aP=document.getElementsByTagName("p");
+	var name_msg=aP[0];
+	var pwd_msg=aP[1];
+	var pwd2_msg=aP[2];
+	var count=document.getElementById("count");
+	var aEm=document.getElementsByTagName("em");
+	var name_length=0;	
+	//姓名
+	oName.onfocus=function(){
+		name_msg.style.display="inline-block";
+		name_msg.innerHTML="<i class='ati'></i>请输入6-25个中文字符!!"
+		}
+	oName.onkeyup=function(){
+		count.style.visibility="visible";
+		name_length=(oName.value).replace(/[^\x00-xff]/g,"re").length;
+		count.innerHTML=name_length+"个字符";
+		if(name_length==0){
+			count.style.visibility="hidden";
+			}
+					}
+	oName.onblur=function(){
+		var re=/[^\w\u4e00-\u9fa5]/g;
+        if(re.test(this.value)){
+			name_msg.innerHTML="<i class='err'></i>含有非法字符!!"
+			}
+		else if(name_length==0){		
+		name_msg.innerHTML="<i class='err'></i>用户名不能为空!!"
+			}
+		else if(name_length<6&&name_length>0){	
+		name_msg.innerHTML="<i class='err'></i>用户名不能少于6个字符!!"
+			}
+		else if(name_length>25){	
+		name_msg.innerHTML="<i class='err'></i>用户名不能超过25个字符!!"
+			}		
+		else{		
+		name_msg.innerHTML="<i class='ok'></i>OK!"
+				}
+		}
+	//密码
+	pwd.onfocus=function(){
+		pwd_msg.style.display="inline-block";
+		pwd_msg.innerHTML="<i class='ati'></i>请使用字母、数字、下划线的组合且强度为6-26个字符，不可为单一的数字、字母或下划线！"
+		}
+	pwd.onkeyup=function(){		 
+		    if(this.value.length>5){
+			aEm[1].className="active";
+			pwd2.removeAttribute("disabled");
+			pwd2_msg.style.display="inline-block";
+			}
+			else{
+			aEm[1].className="";
+			pwd2.setAttribute("disabled","disabled");
+			pwd2_msg.style.display="none";
+				}				
+			//强
+			if(this.value.length>10){
+			aEm[2].className="active";			
+			}
+			else{
+			aEm[2].className="";
+				}				
+		}
+		pwd.onblur=function(){
+		var m=findChar(pwd.value,pwd.value[0]);
+		var re_n=/[^\d]/g;
+		var re_t=/[^\a-zA-Z]/g;		
+		   if(this.value.length==0){
+			pwd_msg.innerHTML="<i class='err'></i>密码不能为空！"
+			   }
+		   else if(m==pwd.value.length){
+			pwd_msg.innerHTML="<i class='err'></i>密码不能为相同字符！"   
+			   }
+		   else if(this.value.length>26||this.value.length<6){
+			pwd_msg.innerHTML="<i class='err'></i>密码应为6-26个字符！"  
+			   }
+		//不能全为数字
+		   else if(!re_n.test(this.value)){
+			   pwd_msg.innerHTML="<i class='err'></i>密码不能全为数字！" 
+			   }		
+		//不能全为字母
+		   else if(!re_t.test(this.value)){
+			   pwd_msg.innerHTML="<i class='err'></i>密码不能全为字母！" 
+			   }
+		//ok
+		else{pwd_msg.innerHTML="<i class='ok'></i>ok！" }	   
+		}		
+	//确认密码
+	pwd2.onblur=function(){
+		if(this.value!=pwd.value){
+			pwd2_msg.innerHTML="<i class='err'></i>2次输入的密码不一致！" 
+			}
+		else{pwd2_msg.innerHTML="<i class='ok'></i>ok！" }
+		}
+	}
+</script>
+</head>
+
+<body>
+<ul>
+  <li>
+    <label><span>姓名：</span>
+      <input type="text" />
+    </label>
+    <p class="msg"><i class="ati"></i>请输入6-25个中文字符</p>
+  </li>
+  <li>
+    <label><span></span><b id="count">0个字符</b></label>
+  </li>
+  <li>
+    <label><span>密码：</span>
+      <input type="text" />
+    </label>
+    <p class="msg"><i class="ati"></i>密码yyyyyyyy</p>
+  </li>
+  <li>
+    <label><span></span><em class="active">弱</em><em>中</em><em>强</em></label>
+  </li>
+  <li>
+    <label><span>再次输入密码：</span>
+      <input type="text" disabled="disabled"/>
+    </label>
+    <p class="msg"><i class="ati"></i>再次输入密码yyyyyyyy</p>
+  </li>
+  <li>
+    <label><span>验证码：</span>
+      <input type="text" />
+    </label>
+  </li>
+</ul>
+</body>
+</html>
